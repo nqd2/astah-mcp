@@ -24,5 +24,12 @@ if (!fs.existsSync(astaPath)) {
 
 fs.mkdirSync(outDir, { recursive: true });
 const outFile = path.join(outDir, `${path.parse(astaPath).name}.${type}`);
-fs.writeFileSync(outFile, "mock-image", "utf8");
+// 1x1 valid PNG (transparent pixel) for mock export mode.
+const oneByOnePngBase64 =
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WlAbwAAAABJRU5ErkJggg==";
+if (type.toLowerCase() === "png") {
+  fs.writeFileSync(outFile, Buffer.from(oneByOnePngBase64, "base64"));
+} else {
+  fs.writeFileSync(outFile, "mock-image", "utf8");
+}
 console.log(`Created image: ${outFile}`);
