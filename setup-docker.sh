@@ -17,6 +17,8 @@ docker run -d \
   -p "${HOST_PORT}:${PORT}" \
   -e PORT="${PORT}" \
   -e HOST="0.0.0.0" \
+  -e ASTAH_PLUGIN_BRIDGE_CMD="node /app/bridge.js --puml {puml} --asta {asta} --diagramType {diagramType}" \
+  -e ASTAH_COMMAND="node /app/mock-export.js" \
   "${IMAGE_NAME}"
 
 echo "Done. MCP URL: http://127.0.0.1:${HOST_PORT}/mcp"
