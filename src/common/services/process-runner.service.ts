@@ -10,6 +10,14 @@ export interface RunCommandOptions {
 
 @Injectable()
 export class ProcessRunnerService {
+  private isWindowsBatchCommand(command: string): boolean {
+    if (process.platform !== "win32") {
+      return false;
+    }
+    const normalized = command.toLowerCase().trim();
+    return normalized.endsWith(".bat") || normalized.endsWith(".cmd");
+  }
+
   splitCommandLine(commandLine: string): { command: string; args: string[] } {
     const parts = commandLine.match(/"[^"]*"|'[^']*'|\S+/g)?.map((part) => {
       if (
@@ -32,12 +40,20 @@ export class ProcessRunnerService {
     const timeoutMs = options.timeoutMs ?? 120000;
 
     return await new Promise<CommandResult>((resolve, reject) => {
-      const child = spawn(command, args, {
-        cwd: options.cwd ?? process.cwd(),
-        env: { ...process.env, ...options.env },
-        shell: false,
-        windowsHide: true
-      });
+      const isBatch = this.isWindowsBatchCommand(command);
+      const child = isBatch
+        ? spawn("cmd.exe", ["/d", "/s", "/c", command, ...args], {
+            cwd: options.cwd ?? process.cwd(),
+            env: { ...process.env, ...options.env },
+            shell: false,
+            windowsHide: true
+          })
+        : spawn(command, args, {
+            cwd: options.cwd ?? process.cwd(),
+            env: { ...process.env, ...options.env },
+            shell: false,
+            windowsHide: true
+          });
 
       let stdout = "";
       let stderr = "";

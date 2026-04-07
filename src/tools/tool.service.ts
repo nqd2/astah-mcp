@@ -125,6 +125,7 @@ export class ToolService {
       pumlPath: z.string().min(1),
       astaPath: z.string().optional(),
       pngOutDir: z.string().min(1),
+      hostOutputDir: z.string().optional(),
       diagramType: z.string().optional(),
       imageType: z.string().default("png")
     });
@@ -134,7 +135,10 @@ export class ToolService {
     const astaPath = parsed.astaPath
       ? this.paths.resolvePath(parsed.astaPath)
       : this.paths.defaultAstaPathFromPuml(pumlPath);
-    const pngOutDir = this.paths.resolvePath(parsed.pngOutDir);
+    const targetOutput = parsed.hostOutputDir && parsed.hostOutputDir.trim()
+      ? parsed.hostOutputDir
+      : parsed.pngOutDir;
+    const pngOutDir = this.paths.resolvePath(targetOutput);
     const importResult = await this.importPuml({ pumlPath, astaPath, diagramType: parsed.diagramType });
     const exportResult = await this.exportPng({ astaPath, outputDir: pngOutDir, imageType: parsed.imageType });
     return this.responseFactory.build({

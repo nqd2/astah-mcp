@@ -22,14 +22,21 @@ if (!fs.existsSync(puml)) {
   process.exit(1);
 }
 
-const content = fs.readFileSync(puml, "utf8");
 const outDir = path.dirname(asta);
 fs.mkdirSync(outDir, { recursive: true });
-// Mock bridge output. Real bridge can replace this file.
-fs.writeFileSync(
-  asta,
-  `# mock-asta\nsource=${puml}\ndiagramType=${diagramType || ""}\n\n${content}\n`,
-  "utf8"
-);
 
-console.log(`Created ASTA: ${asta}`);
+const rootDir = path.resolve(process.cwd(), "..");
+const templateAsta = path.join(rootDir, "Sample.asta");
+
+if (fs.existsSync(templateAsta)) {
+  fs.copyFileSync(templateAsta, asta);
+  console.log(
+    `Created ASTA from template: ${asta} (source=${puml}, diagramType=${diagramType || ""})`
+  );
+  process.exit(0);
+}
+
+console.error(
+  `Cannot create ASTA: missing template project at ${templateAsta}. Provide real bridge command via ASTAH_PLUGIN_BRIDGE_CMD.`
+);
+process.exit(1);
