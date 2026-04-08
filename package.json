@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "MCP server for Astah CLI and Astah Java API",
   "type": "module",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "bin": {
-    "astah-mcp": "dist/server.js"
+    "astah-mcp": "dist/src/server.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

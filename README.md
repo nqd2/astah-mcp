@@ -92,6 +92,20 @@ pnpm run build
 pnpm start
 ```
 
+### Global CLI / NPX
+
+Install globally from this folder:
+
+```bash
+npm i -g .
+```
+
+Run via npx:
+
+```bash
+npx astah-mcp
+```
+
 Dev:
 
 ```bash
